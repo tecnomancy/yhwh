@@ -1,0 +1,85 @@
+name: hwh
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: install
+        run: bun install --frozen-lockfile
+
+      - name: format check
+        run: bun run format:check
+
+      - name: biome check
+        run: bun x biome check src/ scripts/ tools/ tests/
+
+      - name: typecheck
+        run: bun run typecheck
+
+      - name: lint specs (good fixtures must be clean)
+        run: bun run hwh lint specs/__fixtures__/good/
+
+      - name: canonical drift check (production specs)
+        run: bun run hwh canonicalize specs/lib/ --check
+
+      - name: canonical drift check (good fixtures)
+        run: bun run hwh canonicalize specs/__fixtures__/good/ --check
+
+      - name: lint specs (bad fixtures must fail and exit 1)
+        run: |
+          if bun run hwh lint specs/__fixtures__/bad/ ; then
+            echo "expected bad fixtures to produce diagnostics — got exit 0"
+            exit 1
+          fi
+
+      - name: lint specs (cross-ref bad fixtures must fail and exit 1)
+        run: |
+          if bun run hwh lint specs/__fixtures__/bad-cross/ ; then
+            echo "expected bad-cross fixtures to produce diagnostics — got exit 0"
+            exit 1
+          fi
+
+      - name: tests
+        run: bun test --coverage
+
+      - name: fp audit
+        run: bun run check-fp
+
+      - name: parity (handwritten vs meta-derived)
+        run: bun run scripts/parity-handwritten-vs-meta.ts
+
+      - name: builder cross-check (project spec vs runtime)
+        run: bun run scripts/builder-cross-check.ts
+
+      - name: tests with RUN_FROM_BOOTSTRAP=1 (legacy zod path)
+        run: RUN_FROM_BOOTSTRAP=1 bun test
+
+      - name: strip-bootstrap test (runtime survives without per-kind handwritten zod)
+        run: bun run scripts/strip-bootstrap-test.ts
+
+      - name: self-host proof (codegen reproduces across 3 generations + 2 sandboxes)
+        run: bun run scripts/self-host-proof.ts
+
+      - name: lint meta-specs
+        run: bun run hwh lint meta-specs/
+
+      - name: canonical drift check (meta-specs)
+        run: bun run hwh canonicalize meta-specs/ --check
+
+      - name: build (no codegen)
+        run: bun run hwh build specs/__fixtures__/good/
+
+      - name: build (codegen preview)
+        run: bun run hwh build specs/__fixtures__/good/ --codegen

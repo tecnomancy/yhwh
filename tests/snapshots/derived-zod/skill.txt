@@ -1,0 +1,13 @@
+schema(skill) {
+  argument_hint: ZodOptional
+  description: ZodString
+  id: ZodString
+  kind: ZodLiteral
+  owner: ZodString
+  requires_agents: ZodDefault
+  requires_tools: ZodDefault
+  status: ZodEnum
+  tags: ZodOptional
+  user_invocable: ZodBoolean
+  version: ZodString
+}

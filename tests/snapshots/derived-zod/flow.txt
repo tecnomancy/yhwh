@@ -1,0 +1,12 @@
+schema(flow) {
+  actors: ZodDefault
+  description: ZodString
+  id: ZodString
+  kind: ZodLiteral
+  next: ZodDefault
+  owner: ZodString
+  status: ZodEnum
+  tags: ZodOptional
+  triggers: ZodDefault
+  version: ZodString
+}

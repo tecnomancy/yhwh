@@ -1,0 +1,13 @@
+schema(harness) {
+  cron: ZodOptional
+  description: ZodString
+  dispatches: ZodArray
+  gates: ZodDefault
+  id: ZodString
+  kind: ZodLiteral
+  owner: ZodString
+  state_file: ZodString
+  status: ZodEnum
+  tags: ZodOptional
+  version: ZodString
+}

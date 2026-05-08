@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+export PATH="$HOME/.bun/bin:$PATH"
+cd "$(dirname "$0")/.."
+
+bun x biome check src/ scripts/ tools/ tests/ || {
+  echo "[hwh] biome check failed — commit blocked"
+  exit 1
+}
+
+bun run src/index.ts lint specs/lib/ || {
+  echo "[hwh] lint failed — commit blocked"
+  exit 1
+}
+
+# Wave 2: canonical drift gate on staged spec files (skip intentionally-bad fixtures)
+STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.spec\.md$' | grep -v '__fixtures__/bad' || true)
+if [ -n "$STAGED" ]; then
+  bun run src/index.ts canonicalize $STAGED --check || {
+    echo "[hwh] canonical drift detected — run 'hwh canonicalize <files> --write' and re-stage"
+    exit 1
+  }
+fi

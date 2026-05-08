@@ -1,0 +1,11 @@
+schema(entity) {
+  description: ZodString
+  fields: ZodArray
+  id: ZodString
+  invariants: ZodDefault
+  kind: ZodLiteral
+  owner: ZodString
+  status: ZodEnum
+  tags: ZodOptional
+  version: ZodString
+}

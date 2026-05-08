@@ -1,0 +1,15 @@
+schema(project) {
+  canonical_spec: ZodOptional
+  commands: ZodDefault
+  description: ZodString
+  generators: ZodDefault
+  id: ZodString
+  inputs: ZodDefault
+  kind: ZodLiteral
+  owner: ZodString
+  status: ZodEnum
+  tags: ZodOptional
+  validators: ZodDefault
+  version: ZodString
+  waves_state_file: ZodOptional
+}

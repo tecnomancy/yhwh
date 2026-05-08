@@ -1,0 +1,14 @@
+schema(meta-spec) {
+  body_layout: ZodDefault
+  cross_refs: ZodDefault
+  description: ZodString
+  examples: ZodDefault
+  fields: ZodDefault
+  id: ZodString
+  kind: ZodLiteral
+  owner: ZodString
+  status: ZodEnum
+  tags: ZodOptional
+  target_kind: ZodString
+  version: ZodString
+}

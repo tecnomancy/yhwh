@@ -1,0 +1,58 @@
+{
+  "name": "yhwh",
+  "private": false,
+  "version": "1.0.0",
+  "description": "yhwh — a self-referential build model: Y · Hydrate · Weave · Hatch. Markdown specs hydrate into typed semantic models, weave into validated graphs, hatch into runtime artefacts. Y is the typed metacircular fixed point (proven byte-stable, see docs/SELF-HOST-PROOF.md). The CLI binary is `hwh`.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "bun": ">=1.1.0"
+  },
+  "bin": {
+    "hwh": "./src/index.ts"
+  },
+  "scripts": {
+    "hwh": "bun run src/index.ts",
+    "lint": "bun run src/index.ts lint specs/lib/ specs/self/ meta-specs/",
+    "lint:fixtures-good": "bun run src/index.ts lint specs/__fixtures__/good/",
+    "lint:fixtures-bad": "bun run src/index.ts lint specs/__fixtures__/bad/ || true",
+    "build": "bun run src/index.ts build specs/self/",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "typecheck": "tsc --noEmit",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "prepare": "husky",
+    "check-fp": "bun run tools/check-fp.ts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "^1.1.0",
+    "husky": "^9.1.0",
+    "lint-staged": "^15.2.0",
+    "typescript": "^5.5.0"
+  },
+  "dependencies": {
+    "@tecnomancy/alchemy": "^0.2.1",
+    "mdast-util-from-markdown": "^2.0.3",
+    "yaml": "^2.5.0",
+    "zod": "^3.23.0"
+  },
+  "lint-staged": {
+    "specs/lib/**/*.spec.md": [
+      "bun run src/index.ts lint",
+      "bun run src/index.ts canonicalize --check"
+    ],
+    "specs/self/**/*.spec.md": [
+      "bun run src/index.ts lint",
+      "bun run src/index.ts canonicalize --check"
+    ],
+    "meta-specs/**/*.meta.spec.md": [
+      "bun run src/index.ts lint",
+      "bun run src/index.ts canonicalize --check"
+    ],
+    "specs/__fixtures__/**/*.spec.md": ["bun run src/index.ts canonicalize --check"],
+    "*.ts": ["biome check --write"],
+    "*.{json,md}": ["biome format --write"]
+  }
+}

@@ -1,0 +1,14 @@
+schema(ralph) {
+  cadence_min: ZodNumber
+  circuit_breaker: ZodOptional
+  description: ZodString
+  id: ZodString
+  kind: ZodLiteral
+  owner: ZodString
+  pause_flag_path: ZodString
+  report_skills: ZodDefault
+  status: ZodEnum
+  tags: ZodOptional
+  tick_skill: ZodString
+  version: ZodString
+}

@@ -1,0 +1,7 @@
+[install]
+exact = false
+
+[test]
+coverage = true
+coverageThreshold = 0.85
+coveragePathIgnorePatterns = ["src/core/schema/_bootstrap/", "src/core/schema/_generated/"]
